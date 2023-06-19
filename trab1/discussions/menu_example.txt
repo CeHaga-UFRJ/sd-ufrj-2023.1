@@ -1,0 +1,11 @@
+1. Ler os anúncios
+2. Publicar um anúncio
+3. Se inscrever em um tópico
+Escolha uma opção: 1[AVISO]
+<Vermelho: Você recebeu 5 mensagens>
+
+1. Ler os anúncios
+2. Publicar um anúncio
+3. Se inscrever em um tópico
+Escolha uma opção: 1
+

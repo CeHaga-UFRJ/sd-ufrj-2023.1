@@ -1,0 +1,14 @@
+• Callback do cliente salva em uma lista a mensagem
+  ► Ao voltar pro menu principal, imprime no cliente a quantidade de mensagens
+  ► O cliente pode escolher uma mensagem para ler
+  ► As mensagens vão aparecer no formato 'n. Autor: Tópico | 10 caracteres + "..."'
+  ► Ordenar as mensagens por mensagem mais recente primeiro
+  ► Cor vermelha para mensagens não lidas e branca para mensagens lidas 
+
+• Ao receber uma mensagem no menu principal
+  ► Cortar o input com algum texto (Por exemplo: [AVISO])
+  ► Imprimir a quantidade de anúncios em vermelho
+
+DÚVIDAS:
+• Confirmar uso do callback em subscribe_to
+• Data de expiração dos anúncios
