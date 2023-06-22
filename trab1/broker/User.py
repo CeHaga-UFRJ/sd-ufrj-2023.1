@@ -1,19 +1,20 @@
-from Types import Content, UserId, Topic
+from Types import Content, UserId, Topic, FnNotify
 
 class User():
-    def __init__(self, id: UserId):
+    def __init__(self, id: UserId, callback: FnNotify):
         self.id = id
-        self.callback = {}
+        self.callback = callback
+        self.topics = []
 
     def __eq__(self, other):
         return self.id == other.id
     
-    def set_callback(self, Topic, callback):
-        self.callback[Topic] = callback
+    def subscribe_to(self, topic: Topic):
+        self.topics.append(topic)
 
     def notify(self, content: Content):
         listContent = [content]
-        self.callback[content.topic](listContent)
+        self.callback(listContent)
 
-    def notifyAll(self, content: Content):
-        pass
+    def notifyAll(self, contents: list[Content]):
+        self.callback(contents)

@@ -1,5 +1,7 @@
 from Types import Content, UserId, Topic
 
+from User import User
+
 class TopicClass():
     def __init__(self, name: Topic):
         self.name = name
@@ -7,10 +9,16 @@ class TopicClass():
         self.anuncios = []
 
     def __eq__(self, other):
-        return self.name == other.name
+        return type(other) is type(self) and self.name == other.name
     
-    def add_subscriber(self, id: UserId):
-        self.subscribers.append(id)
+    def __hash__(self):
+        return hash(self.name)
+    
+    def add_subscriber(self, user: User):
+        user.subscribe_to(self)
+        self.subscribers.append(user)
 
     def add_anuncio(self, content: Content):
         self.anuncios.append(content)
+
+        
