@@ -1,8 +1,8 @@
 # RASCUNHO
 
 import rpyc
-import Publisher
-import Subscriber
+from Publisher import Publisher
+from Subscriber import Subscriber
 
 
 class UserInterface:
@@ -11,7 +11,7 @@ class UserInterface:
         self.messages = []
 
     def login(self, userId):
-        hasLogin = self.conn.root.login(userId)
+        hasLogin = self.conn.root.login(userId, self.callback)
         if not hasLogin:
             return False
 
@@ -25,7 +25,7 @@ class UserInterface:
         self.publisher.publish(topic, data)
 
     def subscribe_to(self, topic):
-        self.subscriber.subscribe_to(topic, self.callback)
+        self.subscriber.subscribe_to(topic)
 
     def unsubscribe_to(self, topic):
         self.subscriber.unsubscribe_to(topic)

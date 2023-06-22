@@ -1,6 +1,7 @@
 # RASCUNHO
 
-from typing import TypeAlias
+from __future__ import annotations
+from typing import Callable,TypeAlias
 from dataclasses import dataclass
 
 UserId: TypeAlias = str
@@ -12,3 +13,5 @@ class Content:
     author: UserId
     topic: Topic
     data: str
+
+FnNotify: TypeAlias = Callable[[list[Content]], None]
