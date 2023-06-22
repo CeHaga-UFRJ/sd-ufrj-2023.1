@@ -72,5 +72,5 @@ class BrokerService(rpyc.Service): # type: ignore
 if __name__ == "__main__":
     from rpyc.utils.server import ThreadedServer
 
-    server = ThreadedServer(BrokerService, port=18861)
+    server = ThreadedServer(BrokerService(), port=18861)
     server.start()

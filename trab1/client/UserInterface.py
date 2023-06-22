@@ -31,6 +31,7 @@ class UserInterface:
         self.subscriber.unsubscribe_to(topic)
 
     def callback(self, content_list):
+        print("Callback chamado")
         print(content_list)
 
     def read_message(self, messageId):

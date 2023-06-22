@@ -13,6 +13,10 @@ class GerenciadorAnuncios():
         if topic not in self.topicos:
             self.topicos[topicname] = topic
 
+        print("Topico criado: ", topicname)
+        print("Topicos: ", self.topicos)
+        print()
+
         return topicname
     
     def publish(self, content: Content) -> bool:
@@ -20,7 +24,12 @@ class GerenciadorAnuncios():
         if topic in self.topicos:
 
             self.topicos[topic].add_anuncio(content)
+            print("Topico: ", topic)
+            print("Anuncio publicado: ", content.topic, content.data)
+            print("Anuncios: ", self.topicos[topic].anuncios)
             self.anunciar(content)
+            
+            print()
             return True
         else:
             return False
@@ -28,15 +37,22 @@ class GerenciadorAnuncios():
     def subscribe_to(self, user: User, topic: Topic) -> bool:
         if topic in self.topicos:
             self.topicos[topic].add_subscriber(user)
+            print("Topico: ", topic)
+            print("Usuario inscrito: ", user.id)
+            print("Usuarios inscritos: ", self.topicos[topic].subscribers)
+            print()
             return True
         else:
             return False
         
     def anunciar(self, conteudo: Content) -> bool:
         subscribers = self.topicos[conteudo.topic].subscribers
-
+        print("Usuarios a serem notificados:", subscribers)
         for subscriber in subscribers:
+            print("Usuario a ser notificado: ", subscriber.id)
             subscriber.notify(conteudo)
+            print("Usuario notificado: ", subscriber.id)
+            print()
         
         return True
     

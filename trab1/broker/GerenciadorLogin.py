@@ -7,8 +7,12 @@ class GerenciadorLogin():
         self.usuarios_logados = []
 
     def login(self, user: User) -> bool:
-        if id not in self.usuarios_logados:
+        if user not in self.usuarios_logados:
             self.usuarios_logados.append(user)
+            print(f"Usuário {user.id} logado com sucesso!")
+            print ("Usuários logados:")
+            print (self.usuarios_logados)
+            print()
             return True
         else:
             return False
