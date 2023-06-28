@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import rpyc
 import sys
+import threading
 sys.path.append('../')
 
 from Types import Content, UserId, Topic, FnNotify
@@ -15,7 +16,6 @@ from GerenciadorAnuncios import GerenciadorAnuncios
 
 
 class BrokerService(rpyc.Service): # type: ignore
-
     def __init__(self):
         self.gerenciadorLogin = GerenciadorLogin()
         self.gerenciadorAnuncios = GerenciadorAnuncios()
@@ -25,6 +25,7 @@ class BrokerService(rpyc.Service): # type: ignore
 
     # Não é exposed porque só o "admin" tem acesso
     def create_topic(self, id: UserId, topicname: str) -> Topic:
+
         return self.gerenciadorAnuncios.create_topic(topicname)
 
     # Handshake
@@ -67,10 +68,24 @@ class BrokerService(rpyc.Service): # type: ignore
         """
         Função responde se `id` não está inscrito no `topic`
         """
-        return self.gerenciadorAnuncios.unsubscribe_to(id, topic)
+        user = self.gerenciadorLogin.get_user(id)
+
+        return self.gerenciadorAnuncios.unsubscribe_to(user, topic)
+
+
+def iniciaServidor():
+    server = rpyc.ThreadedServer(BrokerService(), port=18861)
+    server.start()
 
 if __name__ == "__main__":
-    from rpyc.utils.server import ThreadedServer
+    print("Iniciando servidor...")
+    print("Digite 'criar' para criar um tópico")
+    t = threading.Thread(target=iniciaServidor)
+    t.start()
 
-    server = ThreadedServer(BrokerService(), port=18861)
-    server.start()
+    while True:
+        comando = input()
+        if comando == "criar":
+            print("Digite o nome do tópico")
+            nome = input()
+            BrokerService().create_topic("", nome)

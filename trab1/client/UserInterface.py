@@ -8,6 +8,7 @@ from Subscriber import Subscriber
 class UserInterface:
     def __init__(self):
         self.conn = rpyc.connect("localhost", 18861)
+        self.bgsrv = rpyc.BgServingThread(self.conn)
         self.messages = []
 
     def login(self, userId):

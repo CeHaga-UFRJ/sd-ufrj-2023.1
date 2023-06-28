@@ -1,3 +1,5 @@
+from threading import Thread
+
 from Types import Content, UserId, Topic
 from Topic import TopicClass
 
@@ -14,7 +16,7 @@ class GerenciadorAnuncios():
             self.topicos[topicname] = topic
 
         print("Topico criado: ", topicname)
-        print("Topicos: ", self.topicos)
+        print("Topicos: ", self.list_topics())
         print()
 
         return topicname
@@ -24,9 +26,11 @@ class GerenciadorAnuncios():
         if topic in self.topicos:
 
             self.topicos[topic].add_anuncio(content)
+            print("Publicando anuncio")
             print("Topico: ", topic)
-            print("Anuncio publicado: ", content.topic, content.data)
+            print("Anuncio publicado: ", content.data)
             print("Anuncios: ", self.topicos[topic].anuncios)
+            print()
             self.anunciar(content)
             
             print()
@@ -35,11 +39,14 @@ class GerenciadorAnuncios():
             return False
         
     def subscribe_to(self, user: User, topic: Topic) -> bool:
-        if topic in self.topicos:
-            self.topicos[topic].add_subscriber(user)
-            print("Topico: ", topic)
+        topic = TopicClass(topic)
+
+        if topic.name in self.topicos and topic not in user.topics:
+            self.topicos[topic.name].add_subscriber(user)
+            print("Inscrição em tópico")
+            print("Topico: ", topic.name)
             print("Usuario inscrito: ", user.id)
-            print("Usuarios inscritos: ", self.topicos[topic].subscribers)
+            print("Inscritos: ", self.topicos[topic.name].get_subscribers())
             print()
             return True
         else:
@@ -47,12 +54,12 @@ class GerenciadorAnuncios():
         
     def anunciar(self, conteudo: Content) -> bool:
         subscribers = self.topicos[conteudo.topic].subscribers
-        print("Usuarios a serem notificados:", subscribers)
+        print("Anunciando para: ", self.topicos[conteudo.topic].get_subscribers())
+
         for subscriber in subscribers:
-            print("Usuario a ser notificado: ", subscriber.id)
-            subscriber.notify(conteudo)
-            print("Usuario notificado: ", subscriber.id)
-            print()
+            t = Thread(target=subscriber.notify, args=(conteudo,))
+            t.start()
+        print()    
         
         return True
     
