@@ -17,8 +17,7 @@ class GerenciadorLogin():
         else:
             return False
 
-    def logout(self, id: UserId) -> bool:
-        user = User(id, None)
+    def logout(self, user: User) -> bool:
         if user in self.usuarios_logados:
             self.usuarios_logados.remove(user)
             return True

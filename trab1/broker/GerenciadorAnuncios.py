@@ -7,13 +7,13 @@ from User import User
 
 class GerenciadorAnuncios(): 
     def __init__(self):
-        self.topicos = {}
+        self.topics = {}
 
     def create_topic(self, topicname: str) -> Topic:
         topic = TopicClass(topicname)
 
-        if topic not in self.topicos:
-            self.topicos[topicname] = topic
+        if topic not in self.topics:
+            self.topics[topicname] = topic
 
         print("Topico criado: ", topicname)
         print("Topicos: ", self.list_topics())
@@ -23,13 +23,13 @@ class GerenciadorAnuncios():
     
     def publish(self, content: Content) -> bool:
         topic = content.topic
-        if topic in self.topicos:
+        if topic in self.topics:
 
-            self.topicos[topic].add_anuncio(content)
+            self.topics[topic].add_anuncio(content)
             print("Publicando anuncio")
             print("Topico: ", topic)
             print("Anuncio publicado: ", content.data)
-            print("Anuncios: ", self.topicos[topic].anuncios)
+            print("Anuncios: ", self.topics[topic].anuncios)
             print()
             self.anunciar(content)
             
@@ -41,12 +41,12 @@ class GerenciadorAnuncios():
     def subscribe_to(self, user: User, topic: Topic) -> bool:
         topic = TopicClass(topic)
 
-        if topic.name in self.topicos and topic not in user.topics:
-            self.topicos[topic.name].add_subscriber(user)
+        if topic.name in self.topics and topic not in user.topics:
+            self.topics[topic.name].add_subscriber(user)
             print("Inscrição em tópico")
             print("Topico: ", topic.name)
             print("Usuario inscrito: ", user.id)
-            print("Inscritos: ", self.topicos[topic.name].get_subscribers())
+            print("Inscritos: ", self.topics[topic.name].get_subscribers())
             print()
             return True
         else:
@@ -55,20 +55,20 @@ class GerenciadorAnuncios():
     def unsubscribe_to(self, user: User, topic: Topic) -> bool:
         topic = TopicClass(topic)
 
-        if topic.name in self.topicos and topic in user.topics:
-            self.topicos[topic.name].remove_subscriber(user)
+        if topic.name in self.topics and topic in user.topics:
+            self.topics[topic.name].remove_subscriber(user)
             print("Desinscrição em tópico")
             print("Topico: ", topic.name)
             print("Usuario desinscrito: ", user.id)
-            print("Inscritos: ", self.topicos[topic.name].get_subscribers())
+            print("Inscritos: ", self.topics[topic.name].get_subscribers())
             print()
             return True
         else:
             return False
         
     def anunciar(self, conteudo: Content) -> bool:
-        subscribers = self.topicos[conteudo.topic].subscribers
-        print("Anunciando para: ", self.topicos[conteudo.topic].get_subscribers())
+        subscribers = self.topics[conteudo.topic].subscribers
+        print("Anunciando para: ", self.topics[conteudo.topic].get_subscribers())
 
         for subscriber in subscribers:
             t = Thread(target=subscriber.notify, args=(conteudo,))
@@ -79,7 +79,7 @@ class GerenciadorAnuncios():
     
 
     def list_topics(self) -> list[Topic]:
-        return list(self.topicos.keys())
+        return list(self.topics.keys())
     
     def notify_all(self, user: User) -> bool:
         contents = []
