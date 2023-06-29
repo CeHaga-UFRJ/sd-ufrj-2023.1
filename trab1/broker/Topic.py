@@ -16,6 +16,10 @@ class TopicClass():
         user.subscribe_to(self)
         self.subscribers.append(user)
 
+    def remove_subscriber(self, user):
+        user.unsubscribe_to(self)
+        self.subscribers.remove(user)
+
     def add_anuncio(self, content: Content):
         self.anuncios.append(content)
 
