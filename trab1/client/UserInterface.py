@@ -1,6 +1,8 @@
-# RASCUNHO
+import sys
+sys.path.append('../')
 
 import rpyc
+from Types import Content
 from Publisher import Publisher
 from Subscriber import Subscriber
 
@@ -37,9 +39,9 @@ class UserInterface:
         self.subscriber.unsubscribe_to(topic)
 
     def callback(self, content_list):
-        print("Callback chamado", content_list)
-        #self.messages = content_list[::-1] + self.messages
-        print(content_list)
+        print(f"Você possui {len(content_list)} novos anúncios")
+        for content in content_list:
+            self.messages.append([content, False])
 
     def read_message(self, messageId):
         self.messages[messageId][1] = True
@@ -93,12 +95,15 @@ def menu_interface(client):
 def list_messages_interface(client):
     print("Anúncios:")
     i = 1
+    white = "\033[0m"
+    red =  "\033[1;31m"
     for message, isRead in client.messages:
-        color = "\033[0m" if isRead else "\033[1;31m"
+        color = white if isRead else red
         data = message.data if len(
-            message.data) < 7 else message.data[:10] + "..."
+            message.data) < 10 else (message.data[:7] + "...")
         print(f'{color}{i}. {message.author}: {message.topic} - "{data}"')
         i += 1
+    print(white)
 
     while True:
         option = input(
@@ -125,7 +130,6 @@ def list_topics_interface(client):
     for topic in topics:
         print(f'{i}. {topic}')
         i += 1
-    print("="*30)
     print()
 
     return topics

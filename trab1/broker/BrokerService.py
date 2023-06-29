@@ -92,7 +92,7 @@ class BrokerService(rpyc.Service):  # type: ignore
 
 
 def iniciaServidor():
-    server = rpyc.ThreadedServer(BrokerService(), port=18861)
+    server = rpyc.ThreadedServer(BrokerService(), port=18861, protocol_config={"allow_public_attrs": True})
     server.start()
 
 
