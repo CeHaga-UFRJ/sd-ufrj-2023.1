@@ -13,6 +13,9 @@ class User():
     def subscribe_to(self, topic):
         self.topics.append(topic)
 
+    def unsubscribe_to(self, topic):
+        self.topics.remove(topic)
+
     def notify(self, content: Content):
         listContent = [content]
         self.callback(listContent)

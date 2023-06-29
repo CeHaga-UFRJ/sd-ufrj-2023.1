@@ -52,6 +52,20 @@ class GerenciadorAnuncios():
         else:
             return False
         
+    def unsubscribe_to(self, user: User, topic: Topic) -> bool:
+        topic = TopicClass(topic)
+
+        if topic.name in self.topicos and topic in user.topics:
+            self.topicos[topic.name].remove_subscriber(user)
+            print("Desinscrição em tópico")
+            print("Topico: ", topic.name)
+            print("Usuario desinscrito: ", user.id)
+            print("Inscritos: ", self.topicos[topic.name].get_subscribers())
+            print()
+            return True
+        else:
+            return False
+        
     def anunciar(self, conteudo: Content) -> bool:
         subscribers = self.topicos[conteudo.topic].subscribers
         print("Anunciando para: ", self.topicos[conteudo.topic].get_subscribers())
