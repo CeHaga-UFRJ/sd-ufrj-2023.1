@@ -65,7 +65,7 @@ class GerenciadorAnuncios():
     
 
     def list_topics(self) -> list[Topic]:
-        return self.topicos.keys()
+        return list(self.topicos.keys())
     
     def notify_all(self, user: User) -> bool:
         contents = []
