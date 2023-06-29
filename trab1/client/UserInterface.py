@@ -7,14 +7,19 @@ from Subscriber import Subscriber
 
 class UserInterface:
     def __init__(self):
-        self.conn = rpyc.connect("localhost", 18861)
-        self.bgsrv = rpyc.BgServingThread(self.conn)
         self.messages = []
 
     def login(self, userId):
+        self.conn = rpyc.connect("localhost", 18861)
+        self.bgsrv = rpyc.BgServingThread(self.conn)
+        
         hasLogin = self.conn.root.login(userId, self.callback)
+
         if not hasLogin:
+            self.conn.close()
+            self.bgsrv.stop()
             return False
+        
 
         self.userId = userId
         self.publisher = Publisher(self.userId, self.conn)
@@ -32,8 +37,8 @@ class UserInterface:
         self.subscriber.unsubscribe_to(topic)
 
     def callback(self, content_list):
-        print("Callback chamado")
-        self.messages = content_list[::-1] + self.messages
+        print("Callback chamado", content_list)
+        #self.messages = content_list[::-1] + self.messages
         print(content_list)
 
     def read_message(self, messageId):
@@ -127,7 +132,17 @@ def list_topics_interface(client):
 
 
 def publish_interface(client):
-    topic = input("Digite o nome do tópico: ")
+    topics = list_topics_interface(client)
+
+    topicId = input("Digite o número do tópico: ")
+    print()
+
+    if (int(topicId) > len(topics) or int(topicId) < 1):
+        print("Opção inválida")
+        return
+    
+    topic = topics[int(topicId) - 1]
+    
     data = input("Digite o conteúdo do anúncio: ")
     print()
     client.publish(topic, data)

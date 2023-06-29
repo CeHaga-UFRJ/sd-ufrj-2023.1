@@ -4,6 +4,7 @@ from Types import Content, UserId, Topic
 from Topic import TopicClass
 
 from User import User
+from Anuncio import Anuncio
 
 class GerenciadorAnuncios(): 
     def __init__(self):
@@ -21,17 +22,17 @@ class GerenciadorAnuncios():
 
         return topicname
     
-    def publish(self, content: Content) -> bool:
-        topic = content.topic
+    def publish(self, anuncio: Anuncio) -> bool:
+        topic = anuncio.content.topic
         if topic in self.topics:
-
-            self.topics[topic].add_anuncio(content)
+            
+            self.topics[topic].add_anuncio(anuncio)
             print("Publicando anuncio")
             print("Topico: ", topic)
-            print("Anuncio publicado: ", content.data)
+            print("Anuncio publicado: ", anuncio.content.data)
             print("Anuncios: ", self.topics[topic].anuncios)
             print()
-            self.anunciar(content)
+            self.anunciar(anuncio)
             
             print()
             return True
@@ -66,13 +67,12 @@ class GerenciadorAnuncios():
         else:
             return False
         
-    def anunciar(self, conteudo: Content) -> bool:
-        subscribers = self.topics[conteudo.topic].subscribers
-        print("Anunciando para: ", self.topics[conteudo.topic].get_subscribers())
+    def anunciar(self, anuncio: Anuncio) -> bool:
+        subscribers = self.topics[anuncio.content.topic].subscribers
+        print("Anunciando para: ", self.topics[anuncio.content.topic].get_subscribers())
 
         for subscriber in subscribers:
-            t = Thread(target=subscriber.notify, args=(conteudo,))
-            t.start()
+            subscriber.notify(anuncio)
         print()    
         
         return True
@@ -84,7 +84,7 @@ class GerenciadorAnuncios():
     def notify_all(self, user: User) -> bool:
         contents = []
         for topic in user.topics:
-            for anuncio in topic.anuncios:
-                contents.append(anuncio)
+            contents += [anuncio for anuncio in topic.anuncios if topic.name not in user.last_notification or user.last_notification[topic.name] < anuncio.id]
+
         if len(contents) > 0:
             user.notifyAll(contents)

@@ -1,4 +1,5 @@
 from Types import Content, Topic
+from Anuncio import Anuncio
 
 class TopicClass():
     def __init__(self, name: Topic):
@@ -20,8 +21,8 @@ class TopicClass():
         user.unsubscribe_to(self)
         self.subscribers.remove(user)
 
-    def add_anuncio(self, content: Content):
-        self.anuncios.append(content)
+    def add_anuncio(self, anuncio: Anuncio):
+        self.anuncios.append(anuncio)
 
     def get_subscribers(self):
         subscribers = []

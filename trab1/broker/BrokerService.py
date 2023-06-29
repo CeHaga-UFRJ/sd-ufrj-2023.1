@@ -10,13 +10,16 @@ import rpyc
 from Types import Content, UserId, Topic, FnNotify
 from GerenciadorAnuncios import GerenciadorAnuncios
 from GerenciadorLogin import GerenciadorLogin
+from GerenciadorUsuarios import GerenciadorUsuarios
 from User import User
+from Anuncio import Anuncio
 
 
 class BrokerService(rpyc.Service):  # type: ignore
     def __init__(self):
         self.gerenciadorLogin = GerenciadorLogin()
         self.gerenciadorAnuncios = GerenciadorAnuncios()
+        self.gerenciadorUsuarios = GerenciadorUsuarios()
         self.create_topic("", "default")
         self.create_topic("", "teste")
         self.create_topic("", "teste2")
@@ -26,7 +29,6 @@ class BrokerService(rpyc.Service):  # type: ignore
     def on_connect(self, conn):
         self.connected[conn] = None
         self.lastConnection = conn
-        print(self.connected)
 
     def on_disconnect(self, conn):
         if conn not in self.connected: return
@@ -45,7 +47,7 @@ class BrokerService(rpyc.Service):  # type: ignore
         """
         Função responde se `id` conseguiu se logar
         """
-        user = User(id, callback)
+        user = self.gerenciadorUsuarios.get_user(id, callback)
         success = self.gerenciadorLogin.login(user)
         if success:
             self.connected[self.lastConnection] = user
@@ -63,12 +65,12 @@ class BrokerService(rpyc.Service):  # type: ignore
 
     # Publisher operations
 
-    def exposed_publish(self, id: UserId, topic: Topic, data: str) -> bool:
+    def exposed_publish(self, userId: UserId, topic: Topic, data: str) -> bool:
         """
         Função responde se Anúncio conseguiu ser publicado
         """
-        content = Content(author=id, topic=topic, data=data)
-        return self.gerenciadorAnuncios.publish(content)
+        anuncio = Anuncio(userId, topic, data)
+        return self.gerenciadorAnuncios.publish(anuncio)
 
     # Subscriber operations
 
