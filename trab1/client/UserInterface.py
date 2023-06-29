@@ -10,6 +10,7 @@ from Subscriber import Subscriber
 class UserInterface:
     def __init__(self):
         self.messages = []
+        self.menuPrinted = False
 
     def login(self, userId):
         self.conn = rpyc.connect("localhost", 18861)
@@ -39,9 +40,15 @@ class UserInterface:
         self.subscriber.unsubscribe_to(topic)
 
     def callback(self, content_list):
-        print(f"Você possui {len(content_list)} novos anúncios")
+        contentListSize = len(content_list)
+        notification = f"Você possui {contentListSize} novos anúncios" if contentListSize > 1 else "Você possui 1 novo anúncio"
+        print(notification)
+        print()
         for content in content_list:
-            self.messages.append([content, False])
+            self.messages.insert(0,[content, False])
+        if not self.menuPrinted:
+            return
+        print_menu_options()
 
     def read_message(self, messageId):
         self.messages[messageId][1] = True
@@ -65,15 +72,10 @@ def login_interface(client):
 
 
 def menu_interface(client):
+    client.menuPrinted = True
     while True:
-        print("1 - Listar anúncios")
-        print("2 - Listar tópicos")
-        print("3 - Publicar um anúncio")
-        print("4 - Inscrever em um tópico")
-        print("5 - Desinscrever de um tópico")
-        print("6 - Sair")
-
-        option = input("Digite a opção desejada: ")
+        print_menu_options()
+        option = input()
         print()
 
         if option == "1":
@@ -91,6 +93,15 @@ def menu_interface(client):
         else:
             print("Opção inválida")
 
+def print_menu_options():
+    print("1 - Listar anúncios")
+    print("2 - Listar tópicos")
+    print("3 - Publicar um anúncio")
+    print("4 - Inscrever em um tópico")
+    print("5 - Desinscrever de um tópico")
+    print("6 - Sair")
+    print("Digite a opção desejada: ", end="")
+    sys.stdout.flush()
 
 def list_messages_interface(client):
     print("Anúncios:")
@@ -112,14 +123,13 @@ def list_messages_interface(client):
         if (option == "q"):
             return
 
-        if (int(option) > len(client.messages) or int(option) < 1):
-            print("Opção inválida")
-            continue
+        if option.isnumeric() and (int(option) <= len(client.messages) and int(option) >= 1):
+            break
+        
+        print("Opção inválida")
 
-        message = client.read_message(int(option) - 1)
-        print(f'{message.author}: {message.topic}\n{message.data}')
-
-
+    message = client.read_message(int(option) - 1)
+    print(f'{message.author}: {message.topic}\n{message.data}')
 
 def list_topics_interface(client):
     print("Tópicos:")
@@ -137,17 +147,20 @@ def list_topics_interface(client):
 
 def publish_interface(client):
     topics = list_topics_interface(client)
+    
+    while True:
+        topicId = input("Digite o número do tópico (Ou 'q' para sair): ")
+        print()
+        if (topicId == "q"):
+            return
 
-    topicId = input("Digite o número do tópico: ")
-    print()
+        if topicId.isnumeric() and (int(topicId) <= len(topics) and int(topicId) >= 1):
+            break
 
-    if (int(topicId) > len(topics) or int(topicId) < 1):
         print("Opção inválida")
-        return
-    
-    topic = topics[int(topicId) - 1]
-    
+
     data = input("Digite o conteúdo do anúncio: ")
+    topic = topics[int(topicId) - 1]
     print()
     client.publish(topic, data)
 
@@ -156,12 +169,16 @@ def subscribe_interface(client):
     
     topics = list_topics_interface(client)
 
-    topicId = input("Digite o número do tópico a se inscrever: ")
-    print()
+    while True:
+        topicId = input("Digite o número do tópico que deseja se inscrever(Ou 'q' para sair): ")
+        print()
+        if (topicId == "q"):
+            return
 
-    if (int(topicId) > len(topics) or int(topicId) < 1):
+        if topicId.isnumeric() and (int(topicId) <= len(topics) and int(topicId) >= 1):
+            break
+
         print("Opção inválida")
-        return
     
     topic = topics[int(topicId) - 1]
 
@@ -169,8 +186,20 @@ def subscribe_interface(client):
 
 
 def unsubscribe_interface(client):
-    topic = input("Digite o nome do tópico a se desinscrever: ")
-    print()
+    topics = list_topics_interface(client)
+
+    while True:
+        topicId = input("Digite o número do tópico que deseja se desinscrever (Ou 'q' para sair): ")
+        print()
+        if (topicId == "q"):
+            return
+
+        if topicId.isnumeric() and (int(topicId) <= len(topics) and int(topicId) >= 1):
+            break
+
+        print("Opção inválida")
+    
+    topic = topics[int(topicId) - 1]
     client.unsubscribe_to(topic)
 
 
