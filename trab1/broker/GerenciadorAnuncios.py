@@ -30,7 +30,7 @@ class GerenciadorAnuncios():
             print("Publicando anuncio")
             print("Topico: ", topic)
             print("Anuncio publicado: ", anuncio.content.data)
-            print("Anuncios: ", self.topics[topic].anuncios)
+            print("Anuncios: ", [a.content for a in self.topics[topic].anuncios])
             print()
             self.anunciar(anuncio)
             
