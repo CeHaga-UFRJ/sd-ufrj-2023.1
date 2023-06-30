@@ -89,15 +89,20 @@ class BrokerService(rpyc.Service):
 
         return self.gerenciadorAnuncios.unsubscribe_to(user, topic)
 
+server = None
 
 def iniciaServidor():
+    global server
     server = rpyc.ThreadedServer(BrokerService(), port=18861, protocol_config={"allow_public_attrs": True})
     server.start()
 
+def encerraServidor():
+    global server
+    server.close()
 
 if __name__ == "__main__":
     print("Iniciando servidor...")
-    print("Digite 'criar' para criar um tópico")
+    print("Digite 'criar' para criar um tópico ou 'sair' para sair")
     t = threading.Thread(target=iniciaServidor)
     t.start()
 
@@ -107,3 +112,12 @@ if __name__ == "__main__":
             print("Digite o nome do tópico")
             nome = input()
             BrokerService().create_topic("", nome)
+        elif comando == "sair":
+            break
+        else:
+            print("Comando inválido")
+
+    print("Encerrando servidor...")
+    encerraServidor()
+    t.join()
+    print("Servidor encerrado")
