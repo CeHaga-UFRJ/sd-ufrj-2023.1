@@ -6,6 +6,10 @@ from Types import Content
 from Publisher import Publisher
 from Subscriber import Subscriber
 
+WHITE = "\033[0m"
+RED =  "\033[1;31m"
+YELLOW = "\033[1;33m"
+
 class UserInterface:
     def __init__(self):
         self.messages = []
@@ -41,8 +45,8 @@ class UserInterface:
     def callback(self, content_list):
         contentListSize = len(content_list)
         notification = f"Você possui {contentListSize} novos anúncios" if contentListSize > 1 else "Você possui 1 novo anúncio"
-        print(notification)
-        print()
+        print(YELLOW+notification)
+        print(WHITE)
         for content in content_list:
             self.messages.insert(0,[content, False])
         if not self.menuPrinted:
@@ -105,15 +109,13 @@ def print_menu_options():
 def list_messages_interface(client):
     print("Anúncios:")
     i = 1
-    white = "\033[0m"
-    red =  "\033[1;31m"
     for message, isRead in client.messages:
-        color = white if isRead else red
+        color = WHITE if isRead else RED
         data = message.data if len(
             message.data) < 10 else (message.data[:7] + "...")
         print(f'{color}{i}. {message.author}: {message.topic} - "{data}"')
         i += 1
-    print(white)
+    print(WHITE)
 
     while True:
         option = input(
@@ -128,7 +130,10 @@ def list_messages_interface(client):
         print("Opção inválida")
 
     message = client.read_message(int(option) - 1)
-    print(f'{message.author}: {message.topic}\n{message.data}')
+    print(f'Autor: {message.author}')
+    print(f'Tópico: {message.topic}')
+    print(f'Mensagem: {message.data}')
+    print()
 
 def list_topics_interface(client):
     print("Tópicos:")

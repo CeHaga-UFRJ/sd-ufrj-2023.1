@@ -1,4 +1,4 @@
-from __future__ import annotations
+#from __future__ import annotations
 
 import sys
 sys.path.append('../')
@@ -109,11 +109,12 @@ if __name__ == "__main__":
     while True:
         comando = input()
         if comando == "criar":
-            print("Digite o nome do tópico")
-            nome = input()
+            nome = input("Digite o nome do tópico: ")
             server.service.create_topic("", nome)
         elif comando == "sair" or comando == "q":
-            break
+            if len(server.service.connected) == 0:
+                break
+            print("Existem usuários conectados")
         else:
             print("Comando inválido")
 
