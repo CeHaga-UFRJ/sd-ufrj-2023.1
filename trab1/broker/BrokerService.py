@@ -111,8 +111,8 @@ if __name__ == "__main__":
         if comando == "criar":
             print("Digite o nome do tópico")
             nome = input()
-            BrokerService().create_topic("", nome)
-        elif comando == "sair":
+            server.service.create_topic("", nome)
+        elif comando == "sair" or comando == "q":
             break
         else:
             print("Comando inválido")
