@@ -1,7 +1,6 @@
 from Types import Content, UserId, FnNotify
 from Anuncio import Anuncio
 
-
 class User():
     def __init__(self, id: UserId, callback: FnNotify):
         self.id = id

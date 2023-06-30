@@ -1,6 +1,3 @@
-# RASCUNHO
-
-
 class Subscriber:
     def __init__(self, userId, conn):
         self.userId = userId

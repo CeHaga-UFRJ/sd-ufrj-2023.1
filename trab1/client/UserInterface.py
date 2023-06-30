@@ -6,7 +6,6 @@ from Types import Content
 from Publisher import Publisher
 from Subscriber import Subscriber
 
-
 class UserInterface:
     def __init__(self):
         self.messages = []

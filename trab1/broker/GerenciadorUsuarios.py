@@ -1,7 +1,6 @@
 from Types import UserId, FnNotify
 from User import User
 
-
 class GerenciadorUsuarios():
     def __init__(self):
         self.all_users = []

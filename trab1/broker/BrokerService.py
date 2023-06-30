@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import sys
@@ -15,7 +14,7 @@ from User import User
 from Anuncio import Anuncio
 
 
-class BrokerService(rpyc.Service):  # type: ignore
+class BrokerService(rpyc.Service):
     def __init__(self):
         self.gerenciadorLogin = GerenciadorLogin()
         self.gerenciadorAnuncios = GerenciadorAnuncios()
